@@ -44,15 +44,7 @@ public class AlumnoServicio2 {
 	}
 	
 	public Alumno updateAlumno(Integer id_alumno, Alumno alumno) {
-		// Optional<Alumno>  resultado = repositorio.findById(id_alumno); 
-		
-		// if(resultado.isPresent()) {
 			
-		// 	return repositorio.save(alumno); 			
-		// }else {
-		// 	throw new ResponseStatusException(HttpStatus.NOT_FOUND,String.format("El usuario %d no existe", id_alumno)); 
-		// }
-		
 		return repositorio.findById(id_alumno).map(estudiante -> {
 			estudiante.setApellido_materno(alumno.getApellido_materno());
 			return repositorio.save(estudiante); 
@@ -73,6 +65,7 @@ public class AlumnoServicio2 {
 		Optional <Alumno> alumno = repositorio.findById(id_alumno); 
 
 		if(alumno.isPresent()) {
+			
 			repositorio.delete(alumno.get());		
 			return alumno.get(); 	
 		}else {
