@@ -6,12 +6,16 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.example.demo.repositorios.AlumnoRepositorio;
 import com.example.demo.entidades.Alumno; 
+import org.json.JSONArray; 
+import org.json.JSONObject; 
 
 @Service
 public class AlumnoServicio2 {
@@ -40,20 +44,37 @@ public class AlumnoServicio2 {
 	}
 	
 	public Alumno updateAlumno(Integer id_alumno, Alumno alumno) {
+		// Optional<Alumno>  resultado = repositorio.findById(id_alumno); 
 		
-		if(repositorio.findById(id_alumno).isPresent()) {
+		// if(resultado.isPresent()) {
 			
-			return repositorio.save(alumno); 			
-		}else {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND,String.format("El usuario %d no existe", id_alumno)); 
-		}		
+		// 	return repositorio.save(alumno); 			
+		// }else {
+		// 	throw new ResponseStatusException(HttpStatus.NOT_FOUND,String.format("El usuario %d no existe", id_alumno)); 
+		// }
+		
+		return repositorio.findById(id_alumno).map(estudiante -> {
+			estudiante.setApellido_materno(alumno.getApellido_materno());
+			return repositorio.save(estudiante); 
+			
+		}).orElseGet(()->{
+			String message; 
+			JSONArray array = new JSONArray(); 
+			JSONObject item = new JSONObject();
+			item.put("Mensaje", "No se pudo encontrar al usuario"); 
+			array.put(item); 
+
+			message = item.toString(); 
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND,message); //String.format("El usuario %d no existe", id_alumno)
+		});
 	}
 
-	public void deleteAlumno(Integer id_alumno) {
+	public Alumno deleteAlumno(Integer id_alumno) {
 		Optional <Alumno> alumno = repositorio.findById(id_alumno); 
-		
+
 		if(alumno.isPresent()) {
-			repositorio.delete(alumno.get());			
+			repositorio.delete(alumno.get());		
+			return alumno.get(); 	
 		}else {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND,String.format("El usuario %d no existe", id_alumno));
 		}

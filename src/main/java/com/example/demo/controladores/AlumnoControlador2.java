@@ -45,13 +45,16 @@ public class AlumnoControlador2 {
 	
 	@PutMapping("/{idusuario}")
 	public ResponseEntity<Alumno> updateAlumno(@PathVariable("idusuario") Integer id_usuario, @RequestBody Alumno alumno){
+		System.out.println("hola si me ejecuto");
 		return new ResponseEntity<Alumno>(servicio.updateAlumno(id_usuario, alumno), HttpStatus.CREATED); 
 	}
 	
 	@DeleteMapping("/{idusuario}")
 	public ResponseEntity<Alumno> deleteAlumno(@PathVariable("idusuario") Integer id_usuario){
-		servicio.deleteAlumno(id_usuario); 
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT); 
+		// servicio.deleteAlumno(id_usuario); 
+		// return new ResponseEntity<>(HttpStatus.NO_CONTENT); 
+
+		return new ResponseEntity<Alumno>(servicio.deleteAlumno(id_usuario), HttpStatus.NO_CONTENT); 
 		
 	}
 
